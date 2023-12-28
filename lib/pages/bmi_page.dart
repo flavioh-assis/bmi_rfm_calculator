@@ -57,6 +57,7 @@ class _BmiPageState extends State<BmiPage> {
             ),
           ),
         ),
+        backgroundColor: Theme.of(context).primaryColor,
       ),
       body: Container(
         padding: const EdgeInsets.all(30),
@@ -130,7 +131,7 @@ class _BmiPageState extends State<BmiPage> {
                     ElevatedButton(
                       style: ButtonStyle(
                         backgroundColor: MaterialStatePropertyAll<Color>(
-                          Theme.of(context).colorScheme.primary,
+                          Theme.of(context).primaryColor,
                         ),
                       ),
                       onPressed: () {
@@ -148,7 +149,10 @@ class _BmiPageState extends State<BmiPage> {
                         widget.cleanFields();
                         _formKey.currentState?.reset();
                       },
-                      child: const Text('Limpar'),
+                      child: Text(
+                        'Limpar',
+                        style: TextStyle(color: Theme.of(context).primaryColor),
+                      ),
                     ),
                   ],
                 ),

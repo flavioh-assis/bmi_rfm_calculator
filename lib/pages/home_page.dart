@@ -103,6 +103,7 @@ class _HomePageState extends State<HomePage> {
         currentPageIndex: _currentPageIndex,
         updatePageIndex: _setPageIndex,
       ),
+      resizeToAvoidBottomInset: false,
     );
   }
 }

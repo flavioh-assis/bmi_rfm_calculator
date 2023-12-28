@@ -18,17 +18,19 @@ class _BottomNavBarState extends State<BottomNavBar> {
   @override
   Widget build(BuildContext context) {
     return NavigationBar(
-      backgroundColor: Colors.green.shade600,
+      backgroundColor: Theme.of(context).primaryColor,
       destinations: const [
         NavigationDestination(
           label: 'IMC',
           icon: Icon(Icons.scale_outlined),
           selectedIcon: Icon(Icons.scale),
+          tooltip: 'Índice de Massa Corporal',
         ),
         NavigationDestination(
           label: 'IMGR',
           icon: Icon(Icons.pregnant_woman_outlined),
           selectedIcon: Icon(Icons.pregnant_woman),
+          tooltip: 'Índice de Massa Gorda Relativa',
         ),
       ],
       height: 60,

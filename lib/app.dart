@@ -16,11 +16,8 @@ class _AppState extends State<App> {
       debugShowCheckedModeBanner: false,
       title: 'Calculadora de IMC e IMGR',
       theme: ThemeData(
-        colorSchemeSeed: Colors.green,
+        primaryColor: Colors.green,
         useMaterial3: true,
-        appBarTheme: AppBarTheme(
-          backgroundColor: Theme.of(context).primaryColor,
-        ),
       ),
       home: const HomePage(),
     );
