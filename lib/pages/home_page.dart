@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
 
+import '/utils.dart';
 import '/pages/bmi_page.dart';
 import '/widgets/bottom_nav_bar.dart';
 
@@ -54,14 +55,6 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       _weight = textToDouble(weight);
     });
-  }
-
-  double textToDouble(String text) {
-    if (text.isEmpty) {
-      return 0.0;
-    }
-
-    return double.parse(text.replaceFirst(',', '.'));
   }
 
   @override

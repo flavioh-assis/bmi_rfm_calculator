@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
-import '../widgets/table_bmi.dart';
+import '/utils.dart';
+import '/widgets/table_bmi.dart';
 
 class BmiPage extends StatefulWidget {
   const BmiPage({
@@ -38,10 +38,18 @@ class _BmiPageState extends State<BmiPage> {
     type: MaskAutoCompletionType.lazy,
   );
 
-  Color getResultTextColor() {
-    return widget.bmiResult == 0
-        ? const Color.fromARGB(0, 0, 0, 0)
-        : Colors.black;
+  Color _getResultTextColor() {
+    return widget.bmiResult == 0 ? Colors.transparent : Colors.black;
+  }
+
+  String _getBmiClassification(double value) {
+    for (var element in values20to60YearsOld.reversed) {
+      if (value >= element.min) {
+        return element.classification;
+      }
+    }
+
+    return '';
   }
 
   @override
@@ -63,6 +71,7 @@ class _BmiPageState extends State<BmiPage> {
         padding: const EdgeInsets.all(30),
         child: Form(
           key: _formKey,
+          canPop: false,
           child: Column(
             children: [
               TextFormField(
@@ -163,10 +172,11 @@ class _BmiPageState extends State<BmiPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'Resultado IMC: ${widget.bmiResult.toStringAsFixed(1).replaceFirst('.', ',')} - Abaixo do peso',
+                      'Resultado IMC: ${doubleToText(widget.bmiResult)} - ${_getBmiClassification(widget.bmiResult)}',
                       style: TextStyle(
-                          color: getResultTextColor(),
-                          fontWeight: FontWeight.w600),
+                        color: _getResultTextColor(),
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ],
                 ),
