@@ -116,10 +116,19 @@ class _BmiPageState extends State<BmiPage> {
           child: Column(
             children: [
               TextFormField(
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: 'Altura (m)',
                   helperText: " ",
-                  icon: Icon(Icons.height),
+                  icon: const Icon(Icons.height),
+                  floatingLabelStyle: const TextStyle(
+                    color: Colors.black,
+                  ),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Theme.of(context).primaryColor,
+                      width: 2,
+                    ),
+                  ),
                 ),
                 keyboardType: TextInputType.number,
                 inputFormatters: [_maskHeight],
@@ -137,10 +146,19 @@ class _BmiPageState extends State<BmiPage> {
                 validator: (String? value) => _validateHeight(value),
               ),
               TextFormField(
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   helperText: " ",
-                  icon: Icon(Icons.scale),
+                  icon: const Icon(Icons.scale),
                   labelText: 'Peso (kg)',
+                  floatingLabelStyle: const TextStyle(
+                    color: Colors.black,
+                  ),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Theme.of(context).primaryColor,
+                      width: 2,
+                    ),
+                  ),
                 ),
                 inputFormatters: [_maskWeight],
                 keyboardType: TextInputType.number,
