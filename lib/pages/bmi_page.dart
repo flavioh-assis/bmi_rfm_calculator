@@ -25,15 +25,18 @@ class BmiPage extends StatefulWidget {
 
 class _BmiPageState extends State<BmiPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  static const _maskDoubleThreeDigits = '#,##';
+  static const _maskDoubleFourDigits = '##,##';
+  static const _maskDoubleFiveDigits = '###,##';
 
-  final maskHeight = MaskTextInputFormatter(
-    mask: '#,##',
+  final _maskHeight = MaskTextInputFormatter(
+    mask: _maskDoubleThreeDigits,
     filter: {"#": RegExp('[0-9]')},
     type: MaskAutoCompletionType.lazy,
   );
 
-  final maskWeight = MaskTextInputFormatter(
-    mask: '##,##',
+  final _maskWeight = MaskTextInputFormatter(
+    mask: _maskDoubleFourDigits,
     filter: {"#": RegExp('[0-9]')},
     type: MaskAutoCompletionType.lazy,
   );
@@ -42,14 +45,52 @@ class _BmiPageState extends State<BmiPage> {
     return widget.bmiResult == 0 ? Colors.transparent : Colors.black;
   }
 
-  String _getBmiClassification(double value) {
+  String _getBmiClassification(double bmiValue) {
     for (var element in values20to60YearsOld.reversed) {
-      if (value >= element.min) {
+      if (bmiValue >= element.min) {
         return element.classification;
       }
     }
 
     return '';
+  }
+
+  String _getMask(int textSize) {
+    if (textSize >= 4) {
+      return _maskDoubleFiveDigits;
+    }
+
+    return _maskDoubleFourDigits;
+  }
+
+  void _handleSubmit() {
+    if (_formKey.currentState!.validate()) {
+      widget.calculateBMI();
+    }
+  }
+
+  String? _validateHeight(String? height) {
+    if (height == null || height.isEmpty) {
+      return 'Entre com a altura em metros';
+    }
+    if (height.length < 4 ||
+        textToDouble(height) < 0.5 ||
+        textToDouble(height) >= 3) {
+      return 'Altura inválida. Verifique e tente novamente';
+    }
+    return null;
+  }
+
+  String? _validateWeight(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Entre com o peso em quilos';
+    }
+    if (value.length < 5 ||
+        textToDouble(value) < 5 ||
+        textToDouble(value) >= 700) {
+      return 'Peso inválido. Verifique e tente novamente';
+    }
+    return null;
   }
 
   @override
@@ -81,11 +122,11 @@ class _BmiPageState extends State<BmiPage> {
                   icon: Icon(Icons.height),
                 ),
                 keyboardType: TextInputType.number,
-                inputFormatters: [maskHeight],
+                inputFormatters: [_maskHeight],
                 onChanged: (String value) {
                   widget.updateHeight(value);
                 },
-                onTapOutside: (event) {
+                onTapOutside: (_) {
                   FocusScopeNode currentFocus = FocusScope.of(context);
 
                   if (!currentFocus.hasPrimaryFocus) {
@@ -93,15 +134,7 @@ class _BmiPageState extends State<BmiPage> {
                   }
                 },
                 textInputAction: TextInputAction.next,
-                validator: (String? value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Entre com a altura em metros';
-                  }
-                  if (value.length < 4) {
-                    return 'Altura inválida. Verifique e tente novamente';
-                  }
-                  return null;
-                },
+                validator: (String? value) => _validateHeight(value),
               ),
               TextFormField(
                 decoration: const InputDecoration(
@@ -109,28 +142,25 @@ class _BmiPageState extends State<BmiPage> {
                   icon: Icon(Icons.scale),
                   labelText: 'Peso (kg)',
                 ),
-                inputFormatters: [maskWeight],
+                inputFormatters: [_maskWeight],
                 keyboardType: TextInputType.number,
-                onChanged: (value) {
+                onChanged: (String value) {
                   widget.updateWeight(value);
+
+                  _maskWeight.updateMask(
+                    mask: _getMask(_maskWeight.getUnmaskedText().length),
+                  );
                 },
-                onTapOutside: (event) {
+                onFieldSubmitted: (_) => _handleSubmit(),
+                onTapOutside: (_) {
                   FocusScopeNode currentFocus = FocusScope.of(context);
 
                   if (!currentFocus.hasPrimaryFocus) {
                     currentFocus.unfocus();
                   }
                 },
-                textInputAction: TextInputAction.done,
-                validator: (String? value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Entre com o peso em quilos';
-                  }
-                  if (value.length < 5) {
-                    return 'Peso inválido. Verifique e tente novamente';
-                  }
-                  return null;
-                },
+                textInputAction: TextInputAction.go,
+                validator: (String? value) => _validateWeight(value),
               ),
               Container(
                 margin: const EdgeInsets.symmetric(vertical: 20),
@@ -143,11 +173,7 @@ class _BmiPageState extends State<BmiPage> {
                           Theme.of(context).primaryColor,
                         ),
                       ),
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          widget.calculateBMI();
-                        }
-                      },
+                      onPressed: () => _handleSubmit(),
                       child: const Text(
                         'Calcular',
                         style: TextStyle(color: Colors.white),
