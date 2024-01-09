@@ -15,35 +15,38 @@ class BottomNavBar extends StatefulWidget {
 }
 
 class _BottomNavBarState extends State<BottomNavBar> {
+  void _onItemTapped(int index) {
+    setState(() {
+      widget.updatePageIndex(index);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return NavigationBar(
-      backgroundColor: Theme.of(context).primaryColor,
-      destinations: const [
-        NavigationDestination(
+    return BottomNavigationBar(
+      currentIndex: widget.currentPageIndex,
+      type: BottomNavigationBarType.fixed,
+      onTap: _onItemTapped,
+      showSelectedLabels: true,
+      selectedFontSize: 14,
+      selectedIconTheme: const IconThemeData(size: 24),
+      selectedItemColor: Theme.of(context).primaryColor,
+      selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold),
+      unselectedFontSize: 12,
+      unselectedIconTheme: const IconThemeData(size: 20),
+      unselectedItemColor: Colors.black.withOpacity(.75),
+      items: const [
+        BottomNavigationBarItem(
           label: 'IMC',
           icon: Icon(Icons.scale_outlined),
-          selectedIcon: Icon(Icons.scale),
-          tooltip: 'Índice de Massa Corporal',
+          activeIcon: Icon(Icons.scale),
         ),
-        NavigationDestination(
+        BottomNavigationBarItem(
           label: 'IMGR',
           icon: Icon(Icons.pregnant_woman_outlined),
-          selectedIcon: Icon(Icons.pregnant_woman),
-          tooltip: 'Índice de Massa Gorda Relativa',
+          activeIcon: Icon(Icons.pregnant_woman),
         ),
       ],
-      height: 60,
-      indicatorColor: Colors.white,
-      onDestinationSelected: (int index) {
-        setState(() {
-          widget.updatePageIndex(index);
-        });
-      },
-      overlayColor: const MaterialStatePropertyAll<Color>(
-        Color.fromARGB(255, 226, 226, 226),
-      ),
-      selectedIndex: widget.currentPageIndex,
     );
   }
 }
