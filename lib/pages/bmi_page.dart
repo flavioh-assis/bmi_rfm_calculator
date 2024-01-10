@@ -116,6 +116,7 @@ class _BmiPageState extends State<BmiPage> {
           child: Column(
             children: [
               TextFormField(
+                cursorColor: Theme.of(context).primaryColor,
                 decoration: InputDecoration(
                   labelText: 'Altura (m)',
                   helperText: " ",
@@ -146,6 +147,7 @@ class _BmiPageState extends State<BmiPage> {
                 validator: (String? value) => _validateHeight(value),
               ),
               TextFormField(
+                cursorColor: Theme.of(context).primaryColor,
                 decoration: InputDecoration(
                   helperText: " ",
                   icon: const Icon(Icons.scale),
