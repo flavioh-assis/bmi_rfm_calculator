@@ -39,7 +39,7 @@ abstract class Classification {
   };
 }
 
-abstract class MinMax20To60YO {
+abstract class MinMaxUntil60YO {
   static Map<String, dynamic> firstRange = {
     'min': 0.0,
     'max': 18.4,
@@ -66,11 +66,40 @@ abstract class MinMax20To60YO {
   };
 }
 
-enum Prefix { under, from, more }
+abstract class MinMaxPlus60YO {
+  static Map<String, dynamic> firstRange = {
+    'min': 0.0,
+    'max': 21.9,
+  };
+  static Map<String, dynamic> secondRange = {
+    'min': 22.0,
+    'max': 27.0,
+  };
+  static Map<String, dynamic> thirdRange = {
+    'min': 27.1,
+    'max': 30.0,
+  };
+  static Map<String, dynamic> forthRange = {
+    'min': 30.1,
+    'max': 35.0,
+  };
+  static Map<String, dynamic> fifthRange = {
+    'min': 35.1,
+    'max': 39.9,
+  };
+  static Map<String, dynamic> sixthRange = {
+    'min': 40.0,
+    'max': double.infinity,
+  };
+}
+
+enum Prefix { less, from, more }
+
+enum AgeGroup { until60, plus60 }
 
 getBmiRange(Prefix prefix, double fromValue, double toValue) {
   switch (prefix) {
-    case Prefix.under:
+    case Prefix.less:
       return 'Menos de ${doubleToText((toValue + 0.1))}';
     case Prefix.from:
       return 'De ${doubleToText(fromValue)} a ${doubleToText(toValue)}';
@@ -79,99 +108,177 @@ getBmiRange(Prefix prefix, double fromValue, double toValue) {
   }
 }
 
-List<BmiValues> values20to60YearsOld = [
+List<BmiValues> valuesUntil60YearsOld = [
   BmiValues(
-    MinMax20To60YO.firstRange['min'],
-    MinMax20To60YO.firstRange['max'],
+    MinMaxUntil60YO.firstRange['min'],
+    MinMaxUntil60YO.firstRange['max'],
     getBmiRange(
-      Prefix.under,
-      MinMax20To60YO.firstRange['min'],
-      MinMax20To60YO.firstRange['max'],
+      Prefix.less,
+      MinMaxUntil60YO.firstRange['min'],
+      MinMaxUntil60YO.firstRange['max'],
     ),
     Classification.underweight['text'],
     Classification.underweight['color'],
   ),
   BmiValues(
-    MinMax20To60YO.secondRange['min'],
-    MinMax20To60YO.secondRange['max'],
+    MinMaxUntil60YO.secondRange['min'],
+    MinMaxUntil60YO.secondRange['max'],
     getBmiRange(
       Prefix.from,
-      MinMax20To60YO.secondRange['min'],
-      MinMax20To60YO.secondRange['max'],
+      MinMaxUntil60YO.secondRange['min'],
+      MinMaxUntil60YO.secondRange['max'],
     ),
     Classification.idealWeight['text'],
     Classification.idealWeight['color'],
   ),
   BmiValues(
-    MinMax20To60YO.thirdRange['min'],
-    MinMax20To60YO.thirdRange['max'],
+    MinMaxUntil60YO.thirdRange['min'],
+    MinMaxUntil60YO.thirdRange['max'],
     getBmiRange(
       Prefix.from,
-      MinMax20To60YO.thirdRange['min'],
-      MinMax20To60YO.thirdRange['max'],
+      MinMaxUntil60YO.thirdRange['min'],
+      MinMaxUntil60YO.thirdRange['max'],
     ),
     Classification.overweight['text'],
     Classification.overweight['color'],
   ),
   BmiValues(
-    MinMax20To60YO.forthRange['min'],
-    MinMax20To60YO.forthRange['max'],
+    MinMaxUntil60YO.forthRange['min'],
+    MinMaxUntil60YO.forthRange['max'],
     getBmiRange(
       Prefix.from,
-      MinMax20To60YO.forthRange['min'],
-      MinMax20To60YO.forthRange['max'],
+      MinMaxUntil60YO.forthRange['min'],
+      MinMaxUntil60YO.forthRange['max'],
     ),
     Classification.obesityI['text'],
     Classification.obesityI['color'],
   ),
   BmiValues(
-    MinMax20To60YO.fifthRange['min'],
-    MinMax20To60YO.fifthRange['max'],
+    MinMaxUntil60YO.fifthRange['min'],
+    MinMaxUntil60YO.fifthRange['max'],
     getBmiRange(
       Prefix.from,
-      MinMax20To60YO.fifthRange['min'],
-      MinMax20To60YO.fifthRange['max'],
+      MinMaxUntil60YO.fifthRange['min'],
+      MinMaxUntil60YO.fifthRange['max'],
     ),
     Classification.obesityII['text'],
     Classification.obesityII['color'],
   ),
   BmiValues(
-    MinMax20To60YO.sixthRange['min'],
-    MinMax20To60YO.sixthRange['max'],
+    MinMaxUntil60YO.sixthRange['min'],
+    MinMaxUntil60YO.sixthRange['max'],
     getBmiRange(
       Prefix.more,
-      MinMax20To60YO.sixthRange['min'],
-      MinMax20To60YO.sixthRange['max'],
+      MinMaxUntil60YO.sixthRange['min'],
+      MinMaxUntil60YO.sixthRange['max'],
+    ),
+    Classification.obesityIII['text'],
+    Classification.obesityIII['color'],
+  ),
+];
+List<BmiValues> valuesPlus60YearsOld = [
+  BmiValues(
+    MinMaxPlus60YO.firstRange['min'],
+    MinMaxPlus60YO.firstRange['max'],
+    getBmiRange(
+      Prefix.less,
+      MinMaxPlus60YO.firstRange['min'],
+      MinMaxPlus60YO.firstRange['max'],
+    ),
+    Classification.underweight['text'],
+    Classification.underweight['color'],
+  ),
+  BmiValues(
+    MinMaxPlus60YO.secondRange['min'],
+    MinMaxPlus60YO.secondRange['max'],
+    getBmiRange(
+      Prefix.from,
+      MinMaxPlus60YO.secondRange['min'],
+      MinMaxPlus60YO.secondRange['max'],
+    ),
+    Classification.idealWeight['text'],
+    Classification.idealWeight['color'],
+  ),
+  BmiValues(
+    MinMaxPlus60YO.thirdRange['min'],
+    MinMaxPlus60YO.thirdRange['max'],
+    getBmiRange(
+      Prefix.from,
+      MinMaxPlus60YO.thirdRange['min'],
+      MinMaxPlus60YO.thirdRange['max'],
+    ),
+    Classification.overweight['text'],
+    Classification.overweight['color'],
+  ),
+  BmiValues(
+    MinMaxPlus60YO.forthRange['min'],
+    MinMaxPlus60YO.forthRange['max'],
+    getBmiRange(
+      Prefix.from,
+      MinMaxPlus60YO.forthRange['min'],
+      MinMaxPlus60YO.forthRange['max'],
+    ),
+    Classification.obesityI['text'],
+    Classification.obesityI['color'],
+  ),
+  BmiValues(
+    MinMaxPlus60YO.fifthRange['min'],
+    MinMaxPlus60YO.fifthRange['max'],
+    getBmiRange(
+      Prefix.from,
+      MinMaxPlus60YO.fifthRange['min'],
+      MinMaxPlus60YO.fifthRange['max'],
+    ),
+    Classification.obesityII['text'],
+    Classification.obesityII['color'],
+  ),
+  BmiValues(
+    MinMaxPlus60YO.sixthRange['min'],
+    MinMaxPlus60YO.sixthRange['max'],
+    getBmiRange(
+      Prefix.more,
+      MinMaxPlus60YO.sixthRange['min'],
+      MinMaxPlus60YO.sixthRange['max'],
     ),
     Classification.obesityIII['text'],
     Classification.obesityIII['color'],
   ),
 ];
 
-class TableBmi extends StatelessWidget {
-  const TableBmi({super.key});
+List<BmiValues> getTableBmiValues(AgeGroup ageGroup) {
+  return ageGroup == AgeGroup.until60
+      ? valuesUntil60YearsOld
+      : valuesPlus60YearsOld;
+}
 
-  // static List<BmiValues> valuesPlus60YearsOld = [
-  //   BmiValues('Abaixo de 21,9', 'Abaixo do peso', Colors.lightGreen),
-  //   BmiValues('De 22,0 a 27,0', 'Peso ideal', Colors.green),
-  //   BmiValues('De 27,1 a 30,0', 'Sobrepeso', Colors.orangeAccent),
-  //   BmiValues('De 30,1 a 35,0', 'Obesidade grau I', Colors.orange),
-  //   BmiValues('De 35,1, a 39,9', 'Obesidade grau II', Colors.deepOrange),
-  //   BmiValues('40,0 ou mais', 'Obesidade grau III', Colors.red),
-  // ];
+class TableBmi extends StatefulWidget {
+  const TableBmi({super.key, required this.ageGroup});
+
+  final AgeGroup ageGroup;
 
   @override
+  State<TableBmi> createState() => _TableBmiState();
+}
+
+class _TableBmiState extends State<TableBmi> {
+  @override
   Widget build(BuildContext context) {
+    List<BmiValues> tableValues = getTableBmiValues(widget.ageGroup);
+
     return Table(
       border: TableBorder.all(),
       children: [
         _createTableHeader(),
-        ...values20to60YearsOld.asMap().entries.map((entry) {
-          return _createTableRow([entry.value.imc, entry.value.classification],
-              entry.value.cellColor);
-        }),
+        ..._createTableValues(tableValues),
       ],
     );
+  }
+
+  _createTableValues(List<BmiValues> values) {
+    return values.asMap().entries.map((entry) {
+      return _createTableRow(
+          [entry.value.imc, entry.value.classification], entry.value.cellColor);
+    });
   }
 
   _createTableRow(
