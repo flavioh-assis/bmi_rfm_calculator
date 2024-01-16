@@ -29,12 +29,13 @@ class _BmiPageState extends State<BmiPage> {
   static const _maskDoubleFourDigits = '##,##';
   static const _maskDoubleFiveDigits = '###,##';
 
+  AgeGroup _selectedAgeGroup = AgeGroup.until60;
+
   final _maskHeight = MaskTextInputFormatter(
     mask: _maskDoubleThreeDigits,
     filter: {"#": RegExp('[0-9]')},
     type: MaskAutoCompletionType.lazy,
   );
-
   final _maskWeight = MaskTextInputFormatter(
     mask: _maskDoubleFourDigits,
     filter: {"#": RegExp('[0-9]')},
@@ -46,7 +47,9 @@ class _BmiPageState extends State<BmiPage> {
   }
 
   String _getBmiClassification(double bmiValue) {
-    for (var element in values20to60YearsOld.reversed) {
+    List<BmiValues> tableValues = getTableBmiValues(_selectedAgeGroup);
+
+    for (var element in tableValues.reversed) {
       if (bmiValue >= element.min) {
         return element.classification;
       }
@@ -61,6 +64,12 @@ class _BmiPageState extends State<BmiPage> {
     }
 
     return _maskDoubleFourDigits;
+  }
+
+  void _handleSelectAgeGroup(AgeGroup value) {
+    setState(() {
+      _selectedAgeGroup = value;
+    });
   }
 
   void _handleSubmit() {
@@ -109,125 +118,172 @@ class _BmiPageState extends State<BmiPage> {
         backgroundColor: Theme.of(context).primaryColor,
       ),
       body: Container(
-        padding: const EdgeInsets.all(30),
+        padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Form(
           key: _formKey,
           canPop: false,
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              TextFormField(
-                cursorColor: Theme.of(context).primaryColor,
-                decoration: InputDecoration(
-                  labelText: 'Altura (m)',
-                  helperText: " ",
-                  icon: const Icon(Icons.height),
-                  floatingLabelStyle: const TextStyle(
-                    color: Colors.black,
-                  ),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(
-                      color: Theme.of(context).primaryColor,
-                      width: 2,
-                    ),
-                  ),
-                ),
-                keyboardType: TextInputType.number,
-                inputFormatters: [_maskHeight],
-                onChanged: (String value) {
-                  widget.updateHeight(value);
-                },
-                onTapOutside: (_) {
-                  FocusScopeNode currentFocus = FocusScope.of(context);
-
-                  if (!currentFocus.hasPrimaryFocus) {
-                    currentFocus.unfocus();
-                  }
-                },
-                textInputAction: TextInputAction.next,
-                validator: (String? value) => _validateHeight(value),
-              ),
-              TextFormField(
-                cursorColor: Theme.of(context).primaryColor,
-                decoration: InputDecoration(
-                  helperText: " ",
-                  icon: const Icon(Icons.scale),
-                  labelText: 'Peso (kg)',
-                  floatingLabelStyle: const TextStyle(
-                    color: Colors.black,
-                  ),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(
-                      color: Theme.of(context).primaryColor,
-                      width: 2,
-                    ),
-                  ),
-                ),
-                inputFormatters: [_maskWeight],
-                keyboardType: TextInputType.number,
-                onChanged: (String value) {
-                  widget.updateWeight(value);
-
-                  _maskWeight.updateMask(
-                    mask: _getMask(_maskWeight.getUnmaskedText().length),
-                  );
-                },
-                onFieldSubmitted: (_) => _handleSubmit(),
-                onTapOutside: (_) {
-                  FocusScopeNode currentFocus = FocusScope.of(context);
-
-                  if (!currentFocus.hasPrimaryFocus) {
-                    currentFocus.unfocus();
-                  }
-                },
-                textInputAction: TextInputAction.go,
-                validator: (String? value) => _validateWeight(value),
-              ),
-              Container(
-                margin: const EdgeInsets.symmetric(vertical: 20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    ElevatedButton(
-                      style: ButtonStyle(
-                        backgroundColor: MaterialStatePropertyAll<Color>(
-                          Theme.of(context).primaryColor,
+              Column(
+                children: [
+                  TextFormField(
+                    cursorColor: Theme.of(context).primaryColor,
+                    decoration: InputDecoration(
+                      labelText: 'Altura (m)',
+                      helperText: " ",
+                      icon: const Icon(Icons.height),
+                      floatingLabelStyle: const TextStyle(
+                        color: Colors.black,
+                      ),
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Theme.of(context).primaryColor,
+                          width: 2,
                         ),
                       ),
-                      onPressed: () => _handleSubmit(),
-                      child: const Text(
-                        'Calcular',
-                        style: TextStyle(color: Colors.white),
+                    ),
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [_maskHeight],
+                    onChanged: (String value) {
+                      widget.updateHeight(value);
+                    },
+                    onTapOutside: (_) {
+                      FocusScopeNode currentFocus = FocusScope.of(context);
+
+                      if (!currentFocus.hasPrimaryFocus) {
+                        currentFocus.unfocus();
+                      }
+                    },
+                    textInputAction: TextInputAction.next,
+                    validator: (String? value) => _validateHeight(value),
+                  ),
+                  TextFormField(
+                    cursorColor: Theme.of(context).primaryColor,
+                    decoration: InputDecoration(
+                      helperText: " ",
+                      icon: const Icon(Icons.scale),
+                      labelText: 'Peso (kg)',
+                      floatingLabelStyle: const TextStyle(
+                        color: Colors.black,
+                      ),
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Theme.of(context).primaryColor,
+                          width: 2,
+                        ),
                       ),
                     ),
-                    ElevatedButton(
-                      onPressed: () {
-                        widget.cleanFields();
-                        _formKey.currentState?.reset();
-                      },
-                      child: Text(
-                        'Limpar',
-                        style: TextStyle(color: Theme.of(context).primaryColor),
-                      ),
-                    ),
-                  ],
-                ),
+                    inputFormatters: [_maskWeight],
+                    keyboardType: TextInputType.number,
+                    onChanged: (String value) {
+                      widget.updateWeight(value);
+
+                      _maskWeight.updateMask(
+                        mask: _getMask(_maskWeight.getUnmaskedText().length),
+                      );
+                    },
+                    onFieldSubmitted: (_) => _handleSubmit(),
+                    onTapOutside: (_) {
+                      FocusScopeNode currentFocus = FocusScope.of(context);
+
+                      if (!currentFocus.hasPrimaryFocus) {
+                        currentFocus.unfocus();
+                      }
+                    },
+                    textInputAction: TextInputAction.go,
+                    validator: (String? value) => _validateWeight(value),
+                  ),
+                ],
               ),
-              Container(
-                margin: const EdgeInsets.symmetric(vertical: 30),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Resultado IMC: ${doubleToText(widget.bmiResult)} - ${_getBmiClassification(widget.bmiResult)}',
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: _selectedAgeGroup == AgeGroup.until60
+                          ? Theme.of(context).primaryColor
+                          : Colors.white,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(25),
+                          topLeft: Radius.circular(25),
+                          bottomRight: Radius.circular(0),
+                          topRight: Radius.circular(0),
+                        ),
+                      ),
+                    ),
+                    onPressed: () => _handleSelectAgeGroup(AgeGroup.until60),
+                    child: Text(
+                      'De 20 a 60 anos',
                       style: TextStyle(
-                        color: _getResultTextColor(),
-                        fontWeight: FontWeight.w600,
+                        color: _selectedAgeGroup == AgeGroup.until60
+                            ? Colors.white
+                            : Theme.of(context).primaryColor,
                       ),
                     ),
-                  ],
+                  ),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: _selectedAgeGroup == AgeGroup.plus60
+                          ? Theme.of(context).primaryColor
+                          : Colors.white,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(0),
+                          topLeft: Radius.circular(0),
+                          bottomRight: Radius.circular(25),
+                          topRight: Radius.circular(25),
+                        ),
+                      ),
+                    ),
+                    onPressed: () => _handleSelectAgeGroup(AgeGroup.plus60),
+                    child: Text(
+                      'Mais de 60 anos',
+                      style: TextStyle(
+                        color: _selectedAgeGroup == AgeGroup.plus60
+                            ? Colors.white
+                            : Theme.of(context).primaryColor,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStatePropertyAll<Color>(
+                        Theme.of(context).primaryColor,
+                      ),
+                    ),
+                    onPressed: () => _handleSubmit(),
+                    child: const Text(
+                      'Calcular',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      widget.cleanFields();
+                      _formKey.currentState?.reset();
+                    },
+                    child: Text(
+                      'Limpar',
+                      style: TextStyle(color: Theme.of(context).primaryColor),
+                    ),
+                  ),
+                ],
+              ),
+              Text(
+                'Resultado IMC: ${doubleToText(widget.bmiResult)} - ${_getBmiClassification(widget.bmiResult)}',
+                style: TextStyle(
+                  color: _getResultTextColor(),
+                  fontWeight: FontWeight.w600,
                 ),
               ),
-              const TableBmi()
+              TableBmi(ageGroup: _selectedAgeGroup)
             ],
           ),
         ),
