@@ -22,6 +22,10 @@ class _AppState extends State<App> {
       theme: ThemeData(
         primaryColor: Colors.green,
         useMaterial3: true,
+        textSelectionTheme: const TextSelectionThemeData(
+          selectionHandleColor: Colors.green,
+          selectionColor: Colors.lightGreen,
+        ),
       ),
       home: const HomePage(),
     );
