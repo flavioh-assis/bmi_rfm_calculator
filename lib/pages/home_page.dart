@@ -71,6 +71,8 @@ class _HomePageState extends State<HomePage> {
         onPageChanged: _setPageIndex,
         children: [
           BmiPage(
+            height: _height,
+            weight: _weight,
             bmiResult: _bmiResult,
             calculateBMI: _calculateBMI,
             cleanFields: _cleanFields,

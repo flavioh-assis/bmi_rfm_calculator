@@ -7,17 +7,22 @@ import '/widgets/table_bmi.dart';
 class BmiPage extends StatefulWidget {
   const BmiPage({
     super.key,
-    required this.updateHeight,
-    required this.updateWeight,
+    required this.height,
+    required this.weight,
     required this.bmiResult,
     required this.calculateBMI,
     required this.cleanFields,
+    required this.updateHeight,
+    required this.updateWeight,
   });
-  final ValueChanged<String> updateHeight;
-  final ValueChanged<String> updateWeight;
+
+  final double height;
+  final double weight;
+  final double bmiResult;
   final Function calculateBMI;
   final Function cleanFields;
-  final double bmiResult;
+  final ValueChanged<String> updateHeight;
+  final ValueChanged<String> updateWeight;
 
   @override
   State<BmiPage> createState() => _BmiPageState();
@@ -56,6 +61,10 @@ class _BmiPageState extends State<BmiPage> {
     }
 
     return '';
+  }
+
+  String _getInitialValue(double value) {
+    return value > 0 ? doubleToText(value, decimalPlaces: 2) : '';
   }
 
   String _getMask(int textSize) {
@@ -144,6 +153,7 @@ class _BmiPageState extends State<BmiPage> {
                       ),
                     ),
                     keyboardType: TextInputType.number,
+                    initialValue: _getInitialValue(widget.height),
                     inputFormatters: [_maskHeight],
                     onChanged: (String value) {
                       widget.updateHeight(value);
@@ -174,6 +184,7 @@ class _BmiPageState extends State<BmiPage> {
                         ),
                       ),
                     ),
+                    initialValue: _getInitialValue(widget.weight),
                     inputFormatters: [_maskWeight],
                     keyboardType: TextInputType.number,
                     onChanged: (String value) {
