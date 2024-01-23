@@ -265,49 +265,43 @@ class _TableBmiState extends State<TableBmi> {
   Widget build(BuildContext context) {
     List<BmiValues> tableValues = getTableBmiValues(widget.ageGroup);
 
-    return Table(
-      border: TableBorder.all(),
-      children: [
-        _createTableHeader(),
-        ..._createTableValues(tableValues),
-      ],
-    );
-  }
-
-  _createTableValues(List<BmiValues> values) {
-    return values.asMap().entries.map((entry) {
-      return _createTableRow(
-          [entry.value.imc, entry.value.classification], entry.value.cellColor);
-    });
-  }
-
-  _createTableRow(
-    List<String> cells,
-    Color rowColor, {
-    FontWeight? fontWeight = FontWeight.normal,
-  }) {
-    return TableRow(
-      children: cells.map((value) {
-        return Container(
-          color: rowColor,
-          padding: const EdgeInsets.all(5),
-          child: Text(
-            value,
-            style: TextStyle(
-              fontWeight: fontWeight,
-            ),
-            textAlign: TextAlign.center,
+    List<DataColumn> buildHeader() {
+      return [
+        const DataColumn(
+          label: Text(
+            'IMC(kg/m²)',
+            style: TextStyle(fontWeight: FontWeight.w600),
           ),
-        );
-      }).toList(),
-    );
-  }
+          tooltip: 'Valor do IMC em kilogramas por metro quadrado',
+        ),
+        const DataColumn(
+          label: Text(
+            'Classificação',
+            style: TextStyle(fontWeight: FontWeight.w600),
+          ),
+          tooltip: 'Classificação do peso em relação à saúde',
+        )
+      ];
+    }
 
-  _createTableHeader() {
-    return _createTableRow(
-      ['IMC(kg/m²)', 'Classificação'],
-      Colors.white,
-      fontWeight: FontWeight.w600,
+    List<DataCell> buildCells(List<String> cells) {
+      return cells.map((value) {
+        return DataCell(Text(value));
+      }).toList();
+    }
+
+    List<DataRow> buildRows(List<BmiValues> values) {
+      return values.map((value) {
+        return DataRow(
+          cells: buildCells([value.imc, value.classification]),
+          color: MaterialStatePropertyAll<Color>(value.cellColor),
+        );
+      }).toList();
+    }
+
+    return DataTable(
+      columns: buildHeader(),
+      rows: buildRows(tableValues),
     );
   }
 }
